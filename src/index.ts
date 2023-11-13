@@ -49,7 +49,7 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
 
     constructor(
         inner: Promise<Result>,
-        triggers: {
+        triggers?: {
             /**
              * Invoked when the state of the inner promise changes
              * @param from the previous state
@@ -80,11 +80,11 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
         const self = this
 
         // set callbacks
-        this.#onStateChanged = triggers.onStateChanged
-        this.#onCancelled = triggers.onCancelled
-        this.#onFulfilled = triggers.onFulfilled
-        this.#onRejected = triggers.onRejected
-        this.#onFinally = triggers.onFinally
+        this.#onStateChanged = triggers?.onStateChanged
+        this.#onCancelled = triggers?.onCancelled
+        this.#onFulfilled = triggers?.onFulfilled
+        this.#onRejected = triggers?.onRejected
+        this.#onFinally = triggers?.onFinally
 
         inner
             .then(
