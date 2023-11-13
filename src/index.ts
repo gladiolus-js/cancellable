@@ -13,35 +13,39 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
     #onRejected?: (reason: Reason) => void
     #onFinally?: () => void
 
-    private forward(to: 'fulfilled', payload: Result): void
-    private forward(to: 'rejected', payload: Reason): void
-    private forward(to: 'cancelled', payload?: Cause): void
-    private forward(to: null): void
+    #forward(to: 'fulfilled', payload: Result): void
+    #forward(to: 'rejected', payload: Reason): void
+    #forward(to: 'cancelled', payload?: Cause): void
+    #forward(to: null): void
     /**
      * Trigger the callbacks according to the state transition
      */
-    private forward(to: 'fulfilled' | 'rejected' | 'cancelled' | null, payload?: Result | Reason | Cause): void {
+    #forward(to: 'fulfilled' | 'rejected' | 'cancelled' | null, payload?: Result | Reason | Cause): void {
         // do nothing if it's already cancelled
         if(this.#state === 'cancelled') return
 
         // trigger 'onStateChanged' callback
         const from = this.#state
-        this.#state = 'fulfilled'
-        this.#onStateChanged?.(from, 'fulfilled')
 
         // trigger 'onFulfilled'/'onRejected'/'onFinally'/'onCancelled' callback
         if(to === 'fulfilled') {
+            this.#state = 'fulfilled'
+            this.#onStateChanged?.(from, 'fulfilled')
             this.#onFulfilled?.(payload as Result)
         } else if(to === 'rejected') {
+            this.#state = 'rejected'
+            this.#onStateChanged?.(from, 'rejected')
             this.#onRejected?.(payload as Reason)
         } else if(to === 'cancelled') {
+            this.#state = 'cancelled'
+            this.#onStateChanged?.(from, 'cancelled')
             this.#onCancelled?.(payload as (Cause | undefined))
         } else if(to === null) {
             this.#onFinally?.()
         }
     }
 
-    private guard(): void {
+    #guard(): void {
         if(this.#state !== 'pending') {
             throw new Error('Cannot modify a settled promise')
         }
@@ -88,10 +92,10 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
 
         inner
             .then(
-                (value) => self.forward('fulfilled', value),
-                (reason) => self.forward('rejected', reason)
+                (value) => self.#forward('fulfilled', value),
+                (reason) => self.#forward('rejected', reason)
             )
-            .finally(() => self.forward('cancelled'))
+            .finally(() => self.#forward('cancelled'))
     }
 
     /**
@@ -103,7 +107,7 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
         onFulfilled: (value: Result) => void,
         onRejected?: (reason: Reason) => void
     ): Cancellable<Result, Reason> {
-        this.guard()
+        this.#guard()
         this.#onFulfilled = onFulfilled
         this.#onRejected = onRejected
         return this
@@ -114,7 +118,7 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
      * @param onRejected invoked when the inner promise is rejected
      */
     catch(onRejected?: (reason: Reason) => void): Cancellable<Result, Reason> {
-        this.guard()
+        this.#guard()
         this.#onRejected = onRejected
         return this
     }
@@ -124,7 +128,7 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
      * @param onFinally invoked when the inner promise is settled
      */
     finally(onFinally?: () => void): Cancellable<Result, Reason> {
-        this.guard()
+        this.#guard()
         this.#onFinally = onFinally
         return this
     }
@@ -134,8 +138,8 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
      * @param cause the cause of the cancellation
      */
     cancel(cause?: Cause): void {
-        this.guard()
-        this.forward('cancelled', cause)
+        this.#guard()
+        this.#forward('cancelled', cause)
     }
 }
 
