@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "lib": [
+            "esnext",
+            "dom"
+        ],
+        "skipLibCheck": true,
+        "baseUrl": "."
+    },
+    "include": [
+        "src/**/*.ts",
+        "tsup.config.ts",
+        "__test__/**/*.ts",
+    ]
+}

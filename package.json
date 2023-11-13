@@ -1,0 +1,22 @@
+{
+    "name": "@gladiolus/cancellable",
+    "author": "lopo<lopo@zju.edu.cn>",
+    "description": "A simple promise wrapper for setting and canceling then/catch/final",
+    "license": "MIT",
+    "packageManager": "yarn@3.6.4",
+    "scripts": {
+        "build": "tsup src/index.ts"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "exports": {
+        "default": "./dist/index.js",
+        "require": "./dist/index.js",
+        "node": "./dist/index.js",
+        "import": "./dist/index.mjs"
+    },
+    "devDependencies": {
+        "tsup": "^7.2.0",
+        "typescript": "^5.2.2"
+    }
+}
