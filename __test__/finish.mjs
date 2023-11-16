@@ -13,18 +13,23 @@ const createTask = (elapsedTime) => {
     });
 }
 
-const task = new Cancellable(
-    createTask(3000),
+const task_fulfill = new Cancellable(
+    createTask(2000),
     {
         onCancelled: (cause) => {
             console.log("This will be called when task is cancelled, and the cause is:", cause);
         },
         onFinally: () => {
-            console.log("This will never be called cause task is cancelled before it is resolved");
+            console.log("This will be called when task is finished");
         }
     }
 );
+task_fulfill.then(() => {
+    console.log("This will be called when task is fulfilled");
+})
 
-setTimeout(() => {
-    task.cancel('Task cancelled by user in 1 second');
-}, 1000)
+// below will be printed in 2 seconds:
+// => This will be called when task is fulfilled
+// => This will be called when task is finished
+//
+// and the script will exit in 2 seconds.

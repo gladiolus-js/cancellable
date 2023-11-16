@@ -31,4 +31,5 @@ setTimeout(() => {
 
 // below will be printed in 1 second:
 // => This will be called when task is cancelled, and the cause is: Task cancelled by user in 1 second
+//
 // and the script will exit in 2 seconds.
