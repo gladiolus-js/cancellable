@@ -95,7 +95,7 @@ class Cancellable<Result = any, Reason = any, Cause = any> {
                 (value) => self.#forward('fulfilled', value),
                 (reason) => self.#forward('rejected', reason)
             )
-            .finally(() => self.#forward('cancelled'))
+            .finally(() => self.#forward(null))
     }
 
     /**
