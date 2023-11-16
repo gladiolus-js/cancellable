@@ -1,5 +1,6 @@
 {
     "name": "@gladiolus/cancellable",
+    "version": "0.1.0",
     "author": "lopo<lopo@zju.edu.cn>",
     "description": "A simple promise wrapper for setting and canceling then/catch/final",
     "license": "MIT",
